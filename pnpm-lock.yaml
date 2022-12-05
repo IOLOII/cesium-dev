@@ -19,9 +19,9 @@ dependencies:
 
 devDependencies:
   '@vue/cli-plugin-babel': 5.0.8_2vo6k7iwn5qyshgggzrcvv6rba
-  '@vue/cli-service': 5.0.8_cmb4ksbf3fdb23ge3xg4xdbkwq
+  '@vue/cli-service': 5.0.8_m7h5xraf4zvcqfbjpiqftlxre4
   sass: 1.56.1
-  sass-loader: 12.6.0_sass@1.56.1
+  sass-loader: 12.6.0_sass@1.56.1+webpack@5.75.0
   vue-template-compiler: 2.7.14
 
 packages:
@@ -100,18 +100,6 @@ packages:
     dependencies:
       '@babel/helper-explode-assignable-expression': 7.18.6
       '@babel/types': 7.20.5
-    dev: true
-
-  /@babel/helper-compilation-targets/7.20.0:
-    resolution: {integrity: sha512-0jp//vDGp9e8hZzBc6N/KwA5ZK3Wsm/pfm4CrY7vzegkVxc65SgSn6wYOnwHe9Js9HRQ1YTCKLGPzDtaS3RoLQ==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-    dependencies:
-      '@babel/compat-data': 7.20.5
-      '@babel/helper-validator-option': 7.18.6
-      browserslist: 4.21.4
-      semver: r2.cnpmjs.org/semver/6.3.0
     dev: true
 
   /@babel/helper-compilation-targets/7.20.0_@babel+core@7.20.5:
@@ -1257,9 +1245,10 @@ packages:
       svg-tags: r2.cnpmjs.org/svg-tags/1.0.0
     dev: true
 
-  /@vue/babel-preset-app/5.0.8_core-js@3.26.1+vue@2.7.14:
+  /@vue/babel-preset-app/5.0.8_4irqr45htt5wogtinx7ou5ea34:
     resolution: {integrity: sha512-yl+5qhpjd8e1G4cMXfORkkBlvtPCIgmRf3IYCWYDKIQ7m+PPa5iTm4feiNmCMD6yGqQWMhhK/7M3oWGL9boKwg==}
     peerDependencies:
+      '@babel/core': '*'
       core-js: ^3
       vue: ^2 || ^3.2.13
     peerDependenciesMeta:
@@ -1381,8 +1370,8 @@ packages:
       '@vue/cli-service': ^3.0.0 || ^4.0.0 || ^5.0.0-0
     dependencies:
       '@babel/core': 7.20.5
-      '@vue/babel-preset-app': 5.0.8_core-js@3.26.1+vue@2.7.14
-      '@vue/cli-service': 5.0.8_cmb4ksbf3fdb23ge3xg4xdbkwq
+      '@vue/babel-preset-app': 5.0.8_4irqr45htt5wogtinx7ou5ea34
+      '@vue/cli-service': 5.0.8_m7h5xraf4zvcqfbjpiqftlxre4
       '@vue/cli-shared-utils': 5.0.8
       babel-loader: 8.3.0_ztqwsvkb6z73luspkai6ilstpu
       thread-loader: r2.cnpmjs.org/thread-loader/3.0.4_webpack@5.75.0
@@ -1403,7 +1392,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0 || ^5.0.0-0
     dependencies:
-      '@vue/cli-service': 5.0.8_cmb4ksbf3fdb23ge3xg4xdbkwq
+      '@vue/cli-service': 5.0.8_m7h5xraf4zvcqfbjpiqftlxre4
       '@vue/cli-shared-utils': 5.0.8
     transitivePeerDependencies:
       - encoding
@@ -1414,10 +1403,10 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0 || ^5.0.0-0
     dependencies:
-      '@vue/cli-service': 5.0.8_cmb4ksbf3fdb23ge3xg4xdbkwq
+      '@vue/cli-service': 5.0.8_m7h5xraf4zvcqfbjpiqftlxre4
     dev: true
 
-  /@vue/cli-service/5.0.8_cmb4ksbf3fdb23ge3xg4xdbkwq:
+  /@vue/cli-service/5.0.8_m7h5xraf4zvcqfbjpiqftlxre4:
     resolution: {integrity: sha512-nV7tYQLe7YsTtzFrfOMIHc5N2hp5lHG2rpYr0aNja9rNljdgcPZLyQRb2YRivTHqTv7lI962UXFURcpStHgyFw==}
     engines: {node: ^12.0.0 || >= 14.0.0}
     hasBin: true
@@ -1448,7 +1437,7 @@ packages:
       webpack-sources:
         optional: true
     dependencies:
-      '@babel/helper-compilation-targets': 7.20.0
+      '@babel/helper-compilation-targets': 7.20.0_@babel+core@7.20.5
       '@soda/friendly-errors-webpack-plugin': r2.cnpmjs.org/@soda/friendly-errors-webpack-plugin/1.8.1_webpack@5.75.0
       '@soda/get-current-script': r2.cnpmjs.org/@soda/get-current-script/1.0.2
       '@types/minimist': r2.cnpmjs.org/@types/minimist/1.2.2
@@ -1491,7 +1480,7 @@ packages:
       postcss: 8.4.19
       postcss-loader: r2.cnpmjs.org/postcss-loader/6.2.1_upg3rk2kpasnbk27hkqapxaxfq
       progress-webpack-plugin: 1.0.16_webpack@5.75.0
-      sass-loader: 12.6.0_sass@1.56.1
+      sass-loader: 12.6.0_sass@1.56.1+webpack@5.75.0
       ssri: r2.cnpmjs.org/ssri/8.0.1
       terser-webpack-plugin: 5.3.6_webpack@5.75.0
       thread-loader: r2.cnpmjs.org/thread-loader/3.0.4_webpack@5.75.0
@@ -2874,7 +2863,7 @@ packages:
       supports-preserve-symlinks-flag: 1.0.0
     dev: true
 
-  /sass-loader/12.6.0_sass@1.56.1:
+  /sass-loader/12.6.0_sass@1.56.1+webpack@5.75.0:
     resolution: {integrity: sha512-oLTaH0YCtX4cfnJZxKSLAyglED0naiYfNG1iXfU5w1LNZ+ukoA5DtyDIN5zmKVZwYNJP4KRc5Y3hkWga+7tYfA==}
     engines: {node: '>= 12.13.0'}
     peerDependencies:
@@ -2896,6 +2885,7 @@ packages:
       klona: r2.cnpmjs.org/klona/2.0.5
       neo-async: r2.cnpmjs.org/neo-async/2.6.2
       sass: 1.56.1
+      webpack: 5.75.0
     dev: true
 
   /sass/1.56.1:
@@ -4096,10 +4086,13 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  r2.cnpmjs.org/ajv-formats/2.1.1:
+  r2.cnpmjs.org/ajv-formats/2.1.1_ajv@8.11.2:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==, registry: https://r.cnpmjs.org/, tarball: https://r2.cnpmjs.org/ajv-formats/-/ajv-formats-2.1.1.tgz}
+    id: r2.cnpmjs.org/ajv-formats/2.1.1
     name: ajv-formats
     version: 2.1.1
+    peerDependencies:
+      ajv: ^8.0.0
     peerDependenciesMeta:
       ajv:
         optional: true
@@ -6736,7 +6729,7 @@ packages:
     dependencies:
       '@types/json-schema': 7.0.11
       ajv: 8.11.2
-      ajv-formats: r2.cnpmjs.org/ajv-formats/2.1.1
+      ajv-formats: r2.cnpmjs.org/ajv-formats/2.1.1_ajv@8.11.2
       ajv-keywords: r2.cnpmjs.org/ajv-keywords/5.1.0_ajv@8.11.2
     dev: true
 
