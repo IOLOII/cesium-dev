@@ -2,25 +2,32 @@
   <div id="app">
     <!-- <div id="toolbar" class="param-container tool-bar"><table><tbody><tr><td>亮度</td><td><input type="range" min="-20" max="20" step="0.02" data-bind="value: brightness, valueUpdate: 'input'" /></td></tr><tr><td>对比度</td><td><input type="range" min="-20" max="20" step="0.02" data-bind="value: contrast, valueUpdate: 'input'" /></td></tr><tr><td>色调</td><td><input type="range" min="-20" max="20" step="0.02" data-bind="value: hue, valueUpdate: 'input'" /></td></tr><tr><td>饱和度</td><td><input type="range" min="-20" max="20" step="0.02" data-bind="value: saturation, valueUpdate: 'input'" /></td></tr><tr><td>伽马</td><td><input type="range" min="-20" max="20" step="0.02" data-bind="value: gamma, valueUpdate: 'input'" /></td></tr></tbody></table></div> -->
     <vc-viewer
-      :show-credit="false"
       :selection-indicator="false"
       :removeCesiumScript="false"
       :showRenderLoopErrors="false"
       @ready="ready"
-      :requestRenderMode="true"
-      :maximumRenderTimeChange="Infinity"
+
       :shadows="false"
       :info-box="false"
-      :animation="true"
+      :animation="false"
       :baseLayerPicker="false"
       :geocoder="false"
       @moveEnd="onMoveEnd"
+      :showCredit="false"
+      :skyBox="false"
+      :skyAtmosphere="false"
+      :sceneMode="2"
+      :mapMode2D="0"
+      :orderIndependentTranslucency="true"
+      :terrainShadows="0"
+      :requestRenderMode="true"
+      :targetFrameRate="60"
     >
       <!-- :homeButton="true"
       :geocoder="true"
       :fullscreenButton="true"
       :resolutionScale="0.5" -->
-      <!-- <vc-layer-imagery></vc-layer-imagery> -->
+      <vc-layer-imagery></vc-layer-imagery>
 
       <!-- <vc-layer-imagery>
         <vc-provider-imagery-urltemplate
@@ -35,8 +42,13 @@
         >
         </vc-provider-imagery-urltemplate>
       </vc-layer-imagery> -->
+
       <vc-layer-imagery>
         <vc-provider-imagery-amap
+          :projection-transforms="{
+            form: 'GCJ02',
+            to: 'WGS84'
+          }"
           mapStyle="6"
           ltype="0"
           :minimumLevel="0"
@@ -44,15 +56,25 @@
           ref="provider"
         ></vc-provider-imagery-amap>
       </vc-layer-imagery>
+
+      <!-- <vc-layer-imagery>
+        <vc-provider-imagery-urltemplate
+          url="https://cxjg.91jt.net:9090/smartpc/map_tiles/{z}/{x}/{y}.png"
+        ></vc-provider-imagery-urltemplate>
+      </vc-layer-imagery> -->
     </vc-viewer>
     <div style="position: fixed; top: 20px; left: 30px">
-      <input v-model="imagery.brightness" /> <span>imagery.brightness</span>
-      <input v-model="imagery.contrast" /> <span>imagery.contrast</span>
-      <input v-model="imagery.alpha" /> <span>imagery.alpha</span>
+      <input v-model="imagery.brightness" @change="click('color')" />
+      <span>imagery.brightness</span>
+      <input v-model="imagery.contrast" @change="click('color')" />
+      <span>imagery.contrast</span>
+      <input v-model="imagery.alpha" @change="click('color')" />
+      <span>imagery.alpha</span>
       <button @click="click('visible')">visible</button>
       <button @click="click('home')">home</button>
       <button @click="click('rotate')">rotate</button>
       <button @click="click('look')">look</button>
+      <button @click="click('color')">调整颜色</button>
     </div>
   </div>
 </template>
@@ -100,10 +122,11 @@
 
   let modelLayer = null
   const imagery = ref({
-    brightness: 1,
-    contrast: 1,
+    brightness: 4.8,
+    contrast: 1.36,
     alpha: 1
   })
+  let sceneLayer = null
 
   /**
    * lifecycle
@@ -120,18 +143,19 @@
     // const { Cesium, viewer } = cesiumInstance
     // const scene = viewer.scene
     console.log(Cesium, viewer)
+    viewer.imageryLayers.get(0).show = false
+    // viewer.imageryLayers.addImageryProvider(
+    //   new Cesium.BingMapsImageryProvider({
+    //     url: 'https://dev.virtualearth.net',
+    //     mapStyle: Cesium.BingMapsStyle.AERIAL,
+    //     key: 'AuZhjW6H0pb4-3NSK_dDK4WeHwdrjQn_T-6PVQrY17HGVHwn5McFdEZiFoUYKCF0'
+    //   })
+    // )
 
-    viewer.imageryLayers.addImageryProvider(
-      new Cesium.BingMapsImageryProvider({
-        url: 'https://dev.virtualearth.net',
-        mapStyle: Cesium.BingMapsStyle.AERIAL,
-        key: 'AuZhjW6H0pb4-3NSK_dDK4WeHwdrjQn_T-6PVQrY17HGVHwn5McFdEZiFoUYKCF0'
-      })
-    )
-
-    let sceneLayer = null
+    sceneLayer = null
     var promise = scene.open(
-      'http://116.136.156.57:8090/iserver/services/3D-DL1120/rest/realspace'
+      // 'http://116.136.156.57:8090/iserver/services/3D-DL1120/rest/realspace'
+      'https://bj.91jt.net:9094/iserver/services/3D-DL1120/rest/realspace'
       // 'http://www.supermapol.com/realspace/services/3D-suofeiya_church/rest/realspace'
     )
     Cesium.when(promise, function (layers) {
@@ -139,7 +163,6 @@
       sceneLayer = layers[0]
       modelLayer = sceneLayer
       // scene.layers.find('Config')
-      console.log(layers === sceneLayer)
 
       var viewModel = {
         brightness: 4.8,
@@ -149,6 +172,18 @@
         gamma: 1.18
       }
       Object.assign(sceneLayer, viewModel)
+      console.log(sceneLayer, 'sceneLayer')
+      console.log(sceneLayer.imageryProvider, 'imageryProvider')
+      sceneLayer.style3D.bottomAltitude = 10
+      setTimeout(() => {
+        // var style3D = new Cesium.Style3D()
+        // style3D.bottomAltitude = 0
+        console.log(sceneLayer)
+        console.log(sceneLayer.style3D.bottomAltitude)
+        sceneLayer.style3D.bottomAltitude = 0
+        console.log(sceneLayer.style3D.bottomAltitude)
+      }, 5000)
+
       // Cesium.knockout.track(viewModel)
       // var toolbar = document.getElementById('toolbar')
       // Cesium.knockout.applyBindings(viewModel, toolbar)
@@ -168,21 +203,21 @@
       // subscribeLayerParameter('hue')
       // subscribeLayerParameter('saturation')
       // subscribeLayerParameter('gamma')
-      setTimeout(() => {
-        viewer.camera.setView({
-          destination: Cesium.Cartesian3.fromDegrees(
-            CONST_VARIABLES.DEF_VIEW_POSITION[0],
-            CONST_VARIABLES.DEF_VIEW_POSITION[1],
-            CONST_VARIABLES.ENTITY_PICK_HEIGHT
-          ),
-          orientation: {
-            // 1.195511608282552 -0.3779724704301761
-            heading: 0.0, // east, default value is 0.0 (north) //东西南北朝向
-            pitch: 0, // default value (looking down)  //俯视仰视视觉
-            roll: 0.0 // default value
-          }
-        })
-      }, 3000)
+      // setTimeout(() => {
+      viewer.camera.setView({
+        destination: Cesium.Cartesian3.fromDegrees(
+          CONST_VARIABLES.DEF_VIEW_POSITION[0],
+          CONST_VARIABLES.DEF_VIEW_POSITION[1],
+          CONST_VARIABLES.ENTITY_PICK_HEIGHT
+        ),
+        orientation: {
+          // 1.195511608282552 -0.3779724704301761
+          heading: Cesium.Math.toRadians(0), // east, default value is 0.0 (north) //东西南北朝向
+          pitch: Cesium.Math.toRadians(-90), // default value (looking down)  //俯视仰视视觉
+          roll: 0.0 // default value
+        }
+      })
+      // }, 3000)
     })
 
     // viewer.scene.requestRenderMode = true
@@ -221,16 +256,28 @@
     //   }
     // }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
+    viewer.cesiumWidget.creditContainer.style.display = 'none'
+
     // 关闭天空盒，否则会显示天空颜色
     // viewer.scene.skyBox.show = false
     // 隐藏版权
-    viewer._cesiumWidget._creditContainer.style.display = 'none'
+    // viewer._cesiumWidget._creditContainer.style.display = 'none'
     // viewer.camera._suspendTerrainAdjustment = false // 是否允许相机进入地下
-    // // 只显示地球一块区域，其余裁剪
-    // let coffeeBeltRectangle = Cesium.Rectangle.fromDegrees(-180.0, -35, 180.0, 35)
+    // // 只显示地球一块区域，其余裁剪 即墨范围
+    // let coffeeBeltRectangle = Cesium.Rectangle.fromDegrees(114,31.5, 123, 40.5)
     // viewer.scene.globe.cartographicLimitRectangle = coffeeBeltRectangle
+
+    // // 只显示地球一块区域，其余裁剪 浙江学校范围 120.08186133480375, 30.345510139270118
+    console.log(CONST_VARIABLES,'CONST_VARIABLES')
+    let coffeeBeltRectangle = Cesium.Rectangle.fromDegrees(
+      CONST_VARIABLES.DEF_VIEW_POSITION[0] - 0.07736900939497104,
+      CONST_VARIABLES.DEF_VIEW_POSITION[1] - 0.07736900939497104,
+      CONST_VARIABLES.DEF_VIEW_POSITION[0] + 0.07736900939497104,
+      CONST_VARIABLES.DEF_VIEW_POSITION[1] + 0.07736900939497104
+    )
+    viewer.scene.globe.cartographicLimitRectangle = coffeeBeltRectangle
     // 显示帧率
-    scene.debugShowFramesPerSecond = true
+    // scene.debugShowFramesPerSecond = true
   }
   const click = type => {
     console.log(type)
@@ -254,16 +301,16 @@
             CONST_VARIABLES.ENTITY_PICK_HEIGHT
           ),
           orientation: {
-            // heading: Cesium.Math.toRadians(0), // east, default value is 0.0 (north) //东西南北朝向
-            // pitch: Cesium.Math.toRadians(-90), // default value (looking down)  //俯视仰视视觉
-            // roll: 0.0 // default value
+            heading: Cesium.Math.toRadians(0), // east, default value is 0.0 (north) //东西南北朝向
+            pitch: Cesium.Math.toRadians(-90), // default value (looking down)  //俯视仰视视觉
+            roll: 0.0 // default value
             // heading: Cesium.Math.toRadians(0.1097327390419407),
             // pitch: Cesium.Math.toRadians(-0.9906321127318103),
             // roll: 0.0
 
-            heading,
-            pitch,
-            roll
+            // heading,
+            // pitch,
+            // roll
           }
         })
         break
@@ -285,11 +332,20 @@
           360
         )
         break
-      default:
+      case 'color':
+        Object.assign(sceneLayer, imagery.value)
+        console.log(sceneLayer)
+        console.table(imagery.value)
+
         break
     }
   }
   const onMoveEnd = e => {
+    // sceneLayer.style3D.bottomAltitude = 10
+    // setTimeout(() => {
+    //  sceneLayer.style3D.bottomAltitude = 0
+    // });
+
     console.log(
       Cartesian3toWGS84(scene.camera.position, Cesium),
       tileLevel({ viewer, Cesium })

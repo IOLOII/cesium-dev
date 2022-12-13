@@ -6,6 +6,7 @@ import VueCesium from 'vue-cesium'
 
 Vue.use(VueCesium, {
   cesiumPath: 'https://www.supermapol.com/earth/Build/Cesium/Cesium.js'
+  // cesiumPath:'/Cesium/Cesium.js'
 })
 window.CESIUM_BASE_URL = "http://www.supermapol.com/earth/vue-iEarth/static/Cesium/"
 
